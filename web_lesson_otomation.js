@@ -9,7 +9,6 @@ class Kayit {
     }
 }
 
-
 // 2. DEĞİŞKENLER, VERİ TİPLERİ ve ARRAYS
 // Verileri tarayıcının hafızasından (LocalStorage) çekiyoruz
 let kayitlar = JSON.parse(localStorage.getItem("dersProgrami")) || [];         
