@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ders Ekleme Otomasyonu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    
+    <nav style="background-color: #007bff; padding: 15px; border-radius: 5px; margin-bottom: 25px;">
+        <a href="web_lesson_otomation.html" style="color: white; text-decoration: none; margin-right: 20px; font-weight: bold;">Ana Sayfa</a>
+        <a href="about.html" style="color: white; text-decoration: none; font-weight: bold;">Yapımcı Hakkında</a>
+    </nav>
+
+    <h1 style="color: #0056b3;">Ders Ekleme Otomasyonu</h1>
+
+   
+    <br><br>
+
+    <p style="color: darkgreen;">
+        Yazılım Mühendisliği ders kayıt sistemine hoş geldiniz.<br>
+        Lütfen aşağıdaki formu eksiksiz doldurun.
+    </p>
+
+    <h3>Sistemin Özellikleri</h3>
+    <ul>
+        <li>Hızlı ve kolay ders kaydı</li>
+        <li>Otomatik haftalık program oluşturma</li>
+        <li>Hata önleyici uyarı sistemi</li>
+    </ul>
+    
+    <hr>
+
+    <h3>Yeni Ders Kaydı Oluştur</h3>
+    <input type="text" id="ders" placeholder="Ders Adı">
+    <input type="text" id="ogr" placeholder="Öğrenci Adı">
+    <input type="text" id="hoca" placeholder="Öğretmen Adı">
+    
+    <select id="gun">
+        <option value="">Gün Seçiniz</option>
+        <option value="Pazartesi">Pazartesi</option>
+        <option value="Salı">Salı</option>
+        <option value="Çarşamba">Çarşamba</option>
+        <option value="Perşembe">Perşembe</option>
+        <option value="Cuma">Cuma</option>
+        <option value="Cumartesi">Cumartesi</option>
+        <option value="Pazar">Pazar</option>
+    </select>
+
+    <button id="btnKaydet">Kaydet</button> 
+    <br><br>
+
+    <button id="btnGoster">Programı Göster</button>
+    
+    <div id="ekran" style="margin-top: 20px;">
+        <b id="toplamKayitMetni">Haftalık Ders Programı (Toplam 0 Kayıt):</b><br><br>
+        
+        <table id="programTablosu">
+            <thead>
+                <tr>
+                    <th>Gün</th>
+                    <th>Ders</th>
+                    <th>Öğrenci</th>
+                    <th>Öğretmen</th>
+                    <th style="text-align: center;">İşlem</th> 
+                </tr>
+            </thead>
+            <tbody id="tabloGovdesi">
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script src="web_lesson_otomation.js"></script>
+
+</body>
+</html>
