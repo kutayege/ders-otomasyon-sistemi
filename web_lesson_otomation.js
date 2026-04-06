@@ -1,120 +1,131 @@
-// 1. CLASSES ve NESNELER
+// 1. CLASSES (Saat verisi eklendi)
 class Kayit {
-    constructor(ders, ogrenci, hoca, gun) {
-        this.id = Date.now(); // Her kayda benzersiz bir kimlik veriyoruz
+    constructor(ders, ogrenci, hoca, gun, saat) {
+        this.id = Date.now(); 
         this.ders = ders;       
         this.ogrenci = ogrenci; 
         this.hoca = hoca;       
         this.gun = gun;         
+        this.saat = saat; // YENİ
     }
 }
 
-// 2. DEĞİŞKENLER, VERİ TİPLERİ ve ARRAYS
-// Verileri tarayıcının hafızasından (LocalStorage) çekiyoruz
-let kayitlar = JSON.parse(localStorage.getItem("dersProgrami")) || [];         
+// 2. DEĞİŞKENLER VE LOCALSTORAGE
+let kayitlar = JSON.parse(localStorage.getItem("proDersProgrami")) || [];         
 let sistemHazirMi = false; 
 
-// 3. FONKSİYONLAR ve REST OPERATÖRÜ (...)
-const topluKayitEkle = (...yeniGelenler) => {
-    // 4. SPREAD OPERATÖRÜ (...)
-    kayitlar = [...kayitlar, ...yeniGelenler];
-    localStorage.setItem("dersProgrami", JSON.stringify(kayitlar)); 
-};
+// Sabit Zaman Çizelgesi Verileri (Matris için)
+const tumGunler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+const tumSaatler = [
+    "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", 
+    "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00", 
+    "15:00 - 16:00", "16:00 - 17:00"
+];
 
-// 5. ASYNC/AWAIT ve JSON (Demo verileri buradan sildik ama yapı duruyor)
+// 5. ASYNC/AWAIT
 const verileriGetir = async () => {
-    // Sektörel standart: Sistem açılırken bir konfigürasyon kontrolü simülasyonu
-    const sistemMesajiJSON = '{"durum": "hazir", "mesaj": "Sistem başarıyla başlatıldı"}';
-    const kontrol = JSON.parse(sistemMesajiJSON); // JSON kullanımı
-    
-    // 1 saniyelik asenkron bekleme (Async/Await kullanımı)
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise(resolve => setTimeout(resolve, 500));
     sistemHazirMi = true;
-    console.log(kontrol.mesaj); // Konsola "Sistem başarıyla başlatıldı" yazar
+    console.log("Matris sistemi aktif."); 
 };
 verileriGetir(); 
 
-// 6. EVENTS ve ARROW FUNCTIONS
+// KAYDET BUTONU - ÇAKIŞMA KONTROLÜ
 document.getElementById("btnKaydet").addEventListener("click", () => {
     
-    // 7. STRING METHODS (.trim)
     const d = document.getElementById("ders").value.trim();
     const o = document.getElementById("ogr").value.trim();
     const h = document.getElementById("hoca").value.trim();
     const g = document.getElementById("gun").value;
+    const s = document.getElementById("saat").value; // Saati alıyoruz
     
-    // 8. İF/ELSE ve OPERATÖRLER
-    if (d !== "" && o !== "" && h !== "" && g !== "") {
-        const yeniKayit = new Kayit(d, o, h, g);
-        kayitlar = [...kayitlar, yeniKayit]; 
-        
-        // Veriyi hafızaya (JSON formatında) kaydet
-        localStorage.setItem("dersProgrami", JSON.stringify(kayitlar));
+    // 1. Kontrol: Boş alan var mı?
+    if (d === "" || o === "" || h === "" || g === "" || s === "") {
+        alert("SİSTEM UYARISI: Lütfen tüm alanları (saat dahil) eksiksiz doldurun!");
+        return; // İşlemi durdur
+    }
 
-        // Formu temizle
-        document.getElementById("ders").value = ""; 
-        document.getElementById("ogr").value = ""; 
-        document.getElementById("hoca").value = ""; 
-        document.getElementById("gun").value = ""; 
+    // 2. Kontrol: ÇAKIŞMA VAR MI? (Array .some() metodu - JavaScript'in en güçlü arama metotlarından biri)
+    const cakismaVarMi = kayitlar.some(kayit => kayit.gun === g && kayit.saat === s);
+    
+    if (cakismaVarMi) {
+        alert(`SİSTEM UYARISI: ${g} günü saat ${s} arası zaten dolu! Lütfen başka bir saat seçin veya mevcut programı silin.`);
+        return; // Kayıt yapmadan işlemi durdur
+    }
 
-        alert("Kayıt başarıyla eklendi!");
-    } else {
-        alert("Lütfen tüm alanları doldurun!");
+    // Her şey uygunsa kaydet
+    const yeniKayit = new Kayit(d, o, h, g, s);
+    kayitlar = [...kayitlar, yeniKayit]; 
+    
+    localStorage.setItem("proDersProgrami", JSON.stringify(kayitlar));
+
+    // Formu temizle
+    document.getElementById("ders").value = ""; 
+    document.getElementById("ogr").value = ""; 
+    document.getElementById("hoca").value = ""; 
+    document.getElementById("gun").value = ""; 
+    document.getElementById("saat").value = ""; 
+
+    alert("✅ Kayıt matrise başarıyla eklendi!");
+    
+    // Eğer tablo o an açıksa otomatik güncelle
+    if(document.getElementById("ekran").style.display === "block") {
+        matrisiCiz();
     }
 });
 
-// Tabloyu Çizme Fonksiyonu
-const tabloyuCiz = () => {
+// YENİ: MATRİS TABLOSU ÇİZME FONKSİYONU
+const matrisiCiz = () => {
     const tabloGövdesi = document.getElementById("tabloGovdesi");
-    const kayitMetni = document.getElementById("toplamKayitMetni");
+    document.getElementById("ekran").style.display = "block"; // Tablo alanını görünür yap
 
-    if (kayitlar.length === 0) {
-        tabloGövdesi.innerHTML = "";
-        kayitMetni.innerText = "Haftalık Ders Programı (Henüz kayıt yok)";
-        return; 
-    }
-
-    // 9. DÖNGÜLER (Klasik For)
-    let toplamDers = 0; 
-    for (let i = 0; i < kayitlar.length; i++) {
-        toplamDers++; 
-    }
-
-    // 10. ARRAY METHODS (.map)
-    const tabloSatirlari = kayitlar.map(kayitNesnesi => {
+    // Tabloyu saat saat öreceğiz (Nested Loops / İç İçe Döngüler)
+    const HTMLSatirlari = tumSaatler.map(saatDilimi => {
         
-        // 11. DESTRUCTURING
-        const { id, ders, ogrenci, hoca, gun } = kayitNesnesi;
-        
-        // 12. TEMPLATE LITERALS
-        return `
-            <tr>
-                <td>${gun}</td>
-                <td>${ders}</td>
-                <td>${ogrenci}</td>
-                <td>${hoca}</td>
-                <td style="text-align: center;">
-                    <button class="btn-sil" onclick="kayitSil(${id})">Sil</button>
-                </td>
-            </tr>
-        `;
-    }).join(""); 
+        // Önce saati yazan sol başlık hücresini oluşturuyoruz
+        let satirHTML = `<tr><td><strong>${saatDilimi}</strong></td>`;
 
-    tabloGövdesi.innerHTML = tabloSatirlari;
-    kayitMetni.innerText = `Haftalık Ders Programı (Toplam ${toplamDers} Kayıt):`;
+        // O saat dilimi için günleri sırayla dönüyoruz
+        tumGunler.forEach(gunAdi => {
+            // Bu gün ve bu saatte ders var mı bul (.find metodu)
+            const oDers = kayitlar.find(k => k.gun === gunAdi && k.saat === saatDilimi);
+
+            if (oDers) {
+                // Eğer ders varsa: Hücreyi KIRMIZI boya, bilgileri yaz ve sil butonu koy
+                satirHTML += `
+                    <td class="dolu-kutu">
+                        <b>${oDers.ders}</b>
+                        ${oDers.ogrenci}<br>
+                        ${oDers.hoca}<br>
+                        <button class="btn-kucuk-sil" onclick="kayitSil(${oDers.id})">Sil</button>
+                    </td>
+                `;
+            } else {
+                // Eğer ders yoksa: Hücreyi BOŞ bırak
+                satirHTML += `<td class="bos-kutu">- Boş -</td>`;
+            }
+        });
+
+        satirHTML += `</tr>`;
+        return satirHTML;
+
+    }).join(""); // Üretilen tüm satırları birleştir
+
+    tabloGövdesi.innerHTML = HTMLSatirlari;
 };
 
 document.getElementById("btnGoster").addEventListener("click", () => {
-    tabloyuCiz();
+    matrisiCiz();
 });
 
-// SİLME FONKSİYONU (.filter metodu)
+// SİLME FONKSİYONU (Silinen saat anında serbest kalır)
 const kayitSil = (silinecekId) => {
-    // Listeden o ID'li kaydı çıkar
-    kayitlar = kayitlar.filter(kayit => kayit.id !== silinecekId);
-    // Hafızayı güncelle
-    localStorage.setItem("dersProgrami", JSON.stringify(kayitlar));
-    // Tabloyu tazele
-    tabloyuCiz();
+    // Onay iste
+    const onay = confirm("Bu dersi programdan silmek istediğinize emin misiniz? (Silindiğinde bu saat dilimi tekrar seçilebilir olacaktır)");
+    
+    if(onay) {
+        kayitlar = kayitlar.filter(kayit => kayit.id !== silinecekId);
+        localStorage.setItem("proDersProgrami", JSON.stringify(kayitlar));
+        matrisiCiz(); // Takvimi anında güncelle
+    }
 };

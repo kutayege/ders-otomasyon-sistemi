@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>İletişim ve Destek</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="web_lesson_otomation.html">🏠 Ana Sayfa</a>
+        <a href="about.html">👩‍💻 Hakkımda</a>
+        <a href="hedefler.html">🚀 Hedeflerim</a>
+        <a href="iletisim.html">✉️ İletişim</a>
+    </nav>
+
+    <div class="ana-konteyner" style="max-width: 600px;">
+        <h1 class="baslik">✉️ Bize Ulaşın</h1>
+        
+        <p style="text-align: center; color: #aaa; margin-bottom: 30px;">
+            Mesajınız doğrudan geliştiricinin Gmail kutusuna iletilecektir.
+        </p>
+
+        <form action="https://formspree.io/f/xgopnlpv" method="POST" class="iletisim-formu">
+            
+            <div class="form-grubu">
+                <label>Adınız Soyadınız:</label>
+                <input type="text" name="kullanici_adi" required placeholder="Örn: Ahmet Yılmaz" style="width: 100%; box-sizing: border-box;">
+            </div>
+
+            <div class="form-grubu">
+                <label>E-Posta Adresiniz (Size dönebilmemiz için):</label>
+                <input type="email" name="email" required placeholder="Örn: ornek@gmail.com" style="width: 100%; box-sizing: border-box;">
+            </div>
+
+            <div class="form-grubu">
+                <label>Konu:</label>
+                <select name="konu" style="width: 100%; box-sizing: border-box;">
+                    <option value="Hata Bildirimi">Hata Bildirimi</option>
+                    <option value="Öneri">Öneri</option>
+                    <option value="Diğer">Diğer</option>
+                </select>
+            </div>
+
+            <div class="form-grubu">
+                <label>Mesajınız:</label>
+                <textarea name="mesaj" rows="6" required placeholder="Mesajınızı buraya yazın..." style="width: 100%; box-sizing: border-box;"></textarea>
+            </div>
+
+            <button type="submit" class="btn-birincil" style="width: 100%; margin-top: 10px;">🚀 Mesajı Gönder</button>
+        </form>
+    </div>
+
+</body>
+</html>
