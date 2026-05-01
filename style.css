@@ -1,33 +1,66 @@
-/* Genel Karanlık Mod Ayarları */
+/* --- GENEL SAYFA (BODY) AYARLARI --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212; /* Siyah arkaplan */
-    color: #e0e0e0; /* Açık gri metinler */
+    background-color: #121212; /* Bütün sayfanın karanlık arka plan rengi */
+    color: #e0e0e0;
     margin: 0;
     padding: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+    transition: background-color 0.4s, color 0.4s; /* Gece/Gündüz geçişi yumuşak olsun diye */
 }
 
-/* Navigasyon */
+/* --- NAVİGASYON (MENÜ) AYARLARI --- */
 .navbar {
     background: linear-gradient(90deg, #1f1c2c 0%, #928dab 100%);
-    padding: 15px;
+    padding: 15px 30px;
     border-radius: 8px;
     margin-bottom: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1.1em;
-    transition: color 0.3s;
+.navbar-ust {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
 }
 
-.navbar a:hover { color: #4facfe; }
+.tema-buton {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: transform 0.3s;
+    margin-left: auto; /* Gündüz/Gece ikonunu her zaman en sağa yaslar */
+}
+
+.tema-buton:hover { transform: scale(1.2); }
+
+/* İŞTE SIKIŞIKLIĞI ÇÖZEN KISIM BURASI */
+.nav-linkler {
+    display: flex;
+    justify-content: center; /* Linkleri tam ortaya hizalar */
+    gap: 40px; /* LİNKLER ARASINDAKİ FERAHLIK (Boşluk) */
+    margin-top: 5px; 
+    flex-wrap: wrap; /* Ekran küçülürse kelimeleri bölmeden düzgünce kaydırır */
+}
+/* Linklerin her durumda (ziyaret edilse bile) bembeyaz ve çizgisiz olmasını sağlıyoruz */
+.nav-linkler a, .nav-linkler a:visited, .navbar a {
+    color: #ffffff !important; /* Rengin kesinlikle beyaz olmasını zorunlu kılıyoruz */
+    text-decoration: none !important; /* Alt çizgiyi kesin olarak kaldırıyoruz */
+    font-weight: bold;
+    font-size: 1.15em;
+    padding: 5px 10px;
+    transition: color 0.3s, transform 0.2s;
+    display: inline-block;
+}
+
+/* Fareyle üzerine gelinceki efekt */
+.nav-linkler a:hover, .navbar a:hover {
+    color: #4facfe !important; /* Üzerine gelince o şık mavi/turkuaz renge dönsün */
+    transform: translateY(-2px);
+}
+
 
 /* Ana İçerik Konteyneri */
 .ana-konteyner {
@@ -199,4 +232,92 @@ textarea {
 textarea:focus {
     border-color: #4facfe;
     box-shadow: 0 0 8px rgba(79, 172, 254, 0.5);
+}
+
+/* --- SAYFA GEÇİŞ ANİMASYONU (Fade-in) --- */
+body {
+    animation: fadeIn 0.8s ease-in-out;
+    transition: background-color 0.4s, color 0.4s; /* Tema geçişleri yumuşak olsun */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- GÜNDÜZ MODU (Light Mode) AYARLARI --- */
+body.light-mode {
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+body.light-mode .navbar {
+    background: linear-gradient(90deg, #007bff 0%, #00d2ff 100%);
+}
+
+body.light-mode .ana-konteyner, 
+body.light-mode .iletisim-formu, 
+body.light-mode .konteyner-kart {
+    background-color: #ffffff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+body.light-mode .baslik { color: #0056b3; }
+
+body.light-mode input, body.light-mode select, body.light-mode textarea {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+body.light-mode #programTablosu { background-color: #fff; }
+body.light-mode #programTablosu th { background-color: #007bff; color: white; border-color: #ddd;}
+body.light-mode #programTablosu td { border-color: #ddd; }
+body.light-mode .bos-kutu { color: #999; }
+
+/* --- MOBİL UYUMLULUK VE HAMBURGER MENÜ --- */
+.navbar-ust {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.menu-ikon {
+    display: none;
+    font-size: 1.8em;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
+}
+
+.tema-buton {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.tema-buton:hover { transform: scale(1.2); }
+
+@media (max-width: 768px) {
+    .menu-ikon { display: block; } /* Mobilde hamburgeri göster */
+    
+    .navbar { flex-direction: column; align-items: flex-start; }
+    
+    .nav-linkler {
+        display: none; /* Linkleri gizle */
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        gap: 15px;
+        padding-top: 15px;
+    }
+    
+    .nav-linkler.aktif { display: flex; } /* Tıklanınca linkleri göster */
+    
+    /* Mobilde tablo taşmasın diye ufaltma */
+    #programTablosu th, #programTablosu td { font-size: 0.8em; padding: 5px; }
 }

@@ -7,12 +7,18 @@
 </head>
 <body>
 
-    <nav class="navbar">
+   <nav class="navbar">
+    <div class="navbar-ust">
+        <button class="menu-ikon" onclick="menuAcKapa()">☰</button>
+        <button class="tema-buton" onclick="temaDegistir()" id="temaIkon">☀️</button>
+    </div>
+    <div class="nav-linkler" id="navLinkler">
         <a href="web_lesson_otomation.html">🏠 Ana Sayfa</a>
         <a href="about.html">👩‍💻 Hakkımda</a>
         <a href="hedefler.html">🚀 Hedeflerim</a>
         <a href="iletisim.html">✉️ İletişim</a>
-    </nav>
+    </div>
+</nav>
 
     <div class="ana-konteyner" style="max-width: 600px;">
         <h1 class="baslik">✉️ Bize Ulaşın</h1>
@@ -50,6 +56,6 @@
             <button type="submit" class="btn-birincil" style="width: 100%; margin-top: 10px;">🚀 Mesajı Gönder</button>
         </form>
     </div>
-
+<script src="ui.js"></script>
 </body>
 </html>

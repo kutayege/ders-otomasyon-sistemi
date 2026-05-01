@@ -1,4 +1,3 @@
-// 1. CLASSES (Saat verisi eklendi)
 class Kayit {
     constructor(ders, ogrenci, hoca, gun, saat) {
         this.id = Date.now(); 
@@ -6,60 +5,40 @@ class Kayit {
         this.ogrenci = ogrenci; 
         this.hoca = hoca;       
         this.gun = gun;         
-        this.saat = saat; // YENİ
+        this.saat = saat; 
     }
 }
 
-// 2. DEĞİŞKENLER VE LOCALSTORAGE
 let kayitlar = JSON.parse(localStorage.getItem("proDersProgrami")) || [];         
-let sistemHazirMi = false; 
-
-// Sabit Zaman Çizelgesi Verileri (Matris için)
 const tumGunler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
-const tumSaatler = [
-    "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", 
-    "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00", 
-    "15:00 - 16:00", "16:00 - 17:00"
-];
+const tumSaatler = ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"];
 
-// 5. ASYNC/AWAIT
-const verileriGetir = async () => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    sistemHazirMi = true;
-    console.log("Matris sistemi aktif."); 
-};
-verileriGetir(); 
+let pastaGrafik = null; // Grafiği hafızada tutacağımız değişken
 
-// KAYDET BUTONU - ÇAKIŞMA KONTROLÜ
+// KAYDET BUTONU
 document.getElementById("btnKaydet").addEventListener("click", () => {
-    
     const d = document.getElementById("ders").value.trim();
     const o = document.getElementById("ogr").value.trim();
     const h = document.getElementById("hoca").value.trim();
     const g = document.getElementById("gun").value;
-    const s = document.getElementById("saat").value; // Saati alıyoruz
+    const s = document.getElementById("saat").value;
     
-    // 1. Kontrol: Boş alan var mı?
     if (d === "" || o === "" || h === "" || g === "" || s === "") {
         alert("SİSTEM UYARISI: Lütfen tüm alanları (saat dahil) eksiksiz doldurun!");
-        return; // İşlemi durdur
+        return; 
     }
 
-    // 2. Kontrol: ÇAKIŞMA VAR MI? (Array .some() metodu - JavaScript'in en güçlü arama metotlarından biri)
     const cakismaVarMi = kayitlar.some(kayit => kayit.gun === g && kayit.saat === s);
     
     if (cakismaVarMi) {
-        alert(`SİSTEM UYARISI: ${g} günü saat ${s} arası zaten dolu! Lütfen başka bir saat seçin veya mevcut programı silin.`);
-        return; // Kayıt yapmadan işlemi durdur
+        alert(`SİSTEM UYARISI: ${g} günü saat ${s} arası zaten dolu!`);
+        return; 
     }
 
-    // Her şey uygunsa kaydet
     const yeniKayit = new Kayit(d, o, h, g, s);
     kayitlar = [...kayitlar, yeniKayit]; 
-    
     localStorage.setItem("proDersProgrami", JSON.stringify(kayitlar));
 
-    // Formu temizle
     document.getElementById("ders").value = ""; 
     document.getElementById("ogr").value = ""; 
     document.getElementById("hoca").value = ""; 
@@ -68,65 +47,93 @@ document.getElementById("btnKaydet").addEventListener("click", () => {
 
     alert("✅ Kayıt matrise başarıyla eklendi!");
     
-    // Eğer tablo o an açıksa otomatik güncelle
     if(document.getElementById("ekran").style.display === "block") {
         matrisiCiz();
     }
 });
 
-// YENİ: MATRİS TABLOSU ÇİZME FONKSİYONU
+// MATRİS VE GRAFİK ÇİZME
 const matrisiCiz = () => {
     const tabloGövdesi = document.getElementById("tabloGovdesi");
-    document.getElementById("ekran").style.display = "block"; // Tablo alanını görünür yap
+    document.getElementById("ekran").style.display = "block"; 
 
-    // Tabloyu saat saat öreceğiz (Nested Loops / İç İçe Döngüler)
+    // Tabloyu Çiz
     const HTMLSatirlari = tumSaatler.map(saatDilimi => {
-        
-        // Önce saati yazan sol başlık hücresini oluşturuyoruz
         let satirHTML = `<tr><td><strong>${saatDilimi}</strong></td>`;
-
-        // O saat dilimi için günleri sırayla dönüyoruz
         tumGunler.forEach(gunAdi => {
-            // Bu gün ve bu saatte ders var mı bul (.find metodu)
             const oDers = kayitlar.find(k => k.gun === gunAdi && k.saat === saatDilimi);
-
             if (oDers) {
-                // Eğer ders varsa: Hücreyi KIRMIZI boya, bilgileri yaz ve sil butonu koy
                 satirHTML += `
                     <td class="dolu-kutu">
-                        <b>${oDers.ders}</b>
-                        ${oDers.ogrenci}<br>
-                        ${oDers.hoca}<br>
+                        <b>${oDers.ders}</b>${oDers.ogrenci}<br>${oDers.hoca}<br>
                         <button class="btn-kucuk-sil" onclick="kayitSil(${oDers.id})">Sil</button>
-                    </td>
-                `;
+                    </td>`;
             } else {
-                // Eğer ders yoksa: Hücreyi BOŞ bırak
                 satirHTML += `<td class="bos-kutu">- Boş -</td>`;
             }
         });
-
-        satirHTML += `</tr>`;
-        return satirHTML;
-
-    }).join(""); // Üretilen tüm satırları birleştir
-
+        return satirHTML + `</tr>`;
+    }).join(""); 
     tabloGövdesi.innerHTML = HTMLSatirlari;
+
+    // --- PAST GRAFİĞİ (CHART.JS) ÇİZİMİ ---
+    const gunIstatistik = { "Pazartesi":0, "Salı":0, "Çarşamba":0, "Perşembe":0, "Cuma":0, "Cumartesi":0, "Pazar":0 };
+    kayitlar.forEach(k => gunIstatistik[k.gun]++); // Günleri say
+
+    const ctx = document.getElementById('dersGrafigi');
+    if(pastaGrafik) pastaGrafik.destroy(); // Eski grafiği sil ki üst üste binmesin
+
+    // Yazı renkleri temaya uygun olsun
+    const yaziRengi = document.body.classList.contains('light-mode') ? '#333' : '#fff';
+
+    pastaGrafik = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(gunIstatistik),
+            datasets: [{
+                data: Object.values(gunIstatistik),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { color: yaziRengi } }
+            }
+        }
+    });
 };
 
-document.getElementById("btnGoster").addEventListener("click", () => {
-    matrisiCiz();
-});
+document.getElementById("btnGoster").addEventListener("click", matrisiCiz);
 
-
-// SİLME FONKSİYONU (Silinen saat anında serbest kalır)
 const kayitSil = (silinecekId) => {
-    // Onay iste
-    const onay = confirm("Bu dersi programdan silmek istediğinize emin misiniz? (Silindiğinde bu saat dilimi tekrar seçilebilir olacaktır)");
-    
-    if(onay) {
+    if(confirm("Bu dersi silmek istediğinize emin misiniz?")) {
         kayitlar = kayitlar.filter(kayit => kayit.id !== silinecekId);
         localStorage.setItem("proDersProgrami", JSON.stringify(kayitlar));
-        matrisiCiz(); // Takvimi anında güncelle
+        matrisiCiz(); 
     }
 };
+
+// --- YENİ: PDF / RESİM İNDİRME ÖZELLİĞİ (html2canvas) ---
+document.getElementById('btnIndir').addEventListener('click', () => {
+    const ekranBolgesi = document.getElementById('ekran');
+    const mevcutArkaplan = document.body.classList.contains('light-mode') ? '#ffffff' : '#121212';
+    
+    // Geçici olarak sil butonlarını gizle (resimde çıkmasın diye)
+    const silButonlari = document.querySelectorAll('.btn-kucuk-sil');
+    silButonlari.forEach(b => b.style.display = 'none');
+
+    // Ekranın resmini çek
+    html2canvas(ekranBolgesi, { backgroundColor: mevcutArkaplan }).then(canvas => {
+        // İndirme linkini oluştur ve tıkla
+        const link = document.createElement('a');
+        link.download = 'ders-programim.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        // Sil butonlarını geri getir
+        silButonlari.forEach(b => b.style.display = 'inline-block');
+    });
+});

@@ -2,30 +2,32 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Ders Ekleme Otomasyonu Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobil cihazlar için çok önemli -->
+    <title>Ders Otomasyonu Pro</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Dış Kütüphaneler: Grafik ve Resim Olarak İndirme İçin -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
-   <nav class="navbar">
-    <a href="web_lesson_otomation.html">🏠 Ana Sayfa</a>
-    <a href="about.html">👩‍💻 Hakkımda</a>
-    <a href="hedefler.html">🚀 Hedeflerim</a>
-    <a href="iletisim.html">✉️ İletişim</a>
-</nav>
+    <nav class="navbar">
+        <div class="navbar-ust">
+            <button class="menu-ikon" onclick="menuAcKapa()">☰</button>
+            <button class="tema-buton" onclick="temaDegistir()" id="temaIkon">☀️</button>
+        </div>
+        <div class="nav-linkler" id="navLinkler">
+            <a href="web_lesson_otomation.html">🏠 Ana Sayfa</a>
+            <a href="about.html">👩‍💻 Hakkımda</a>
+            <a href="hedefler.html">🚀 Hedeflerim</a>
+            <a href="iletisim.html">✉️ İletişim</a>
+        </div>
+    </nav>
 
     <div class="ana-konteyner">
         <h1 class="baslik">📚 Ders Ekleme Otomasyonu</h1>
-
-        <div class="bilgi-paneli">
-            <strong>⚠️ Sistem Bilgilendirmesi:</strong><br>
-            Formdaki alanları boş bırakamazsınız. Haftalık programda dolu olan bir gün ve saat dilimini tekrar seçmeye çalışırsanız sistem <b>çakışma uyarısı</b> verecek ve kaydı engelleyecektir. İlgili saati tekrar seçebilmek için mevcut programdan o dersi silmeniz gerekmektedir.
-        </div>
-        
         <hr class="ayrac">
 
-        <h3 style="text-align: center; color: #4facfe;">✨ Yeni Ders Kaydı Oluştur</h3>
-        
         <div class="form-alani">
             <input type="text" id="ders" placeholder="Ders Adı">
             <input type="text" id="ogr" placeholder="Öğrenci Adı">
@@ -61,31 +63,36 @@
         </div>
         
         <div id="ekran" style="margin-top: 30px; display: none;">
-            <h3 style="text-align: center; color: #fff;">Haftalık Ders Programı Matrisi</h3>
             
+            <!-- YENİ: Pasta Grafiği Alanı -->
+            <div style="height: 300px; margin-bottom: 30px;">
+                <h3 style="text-align: center; margin-bottom: 10px;">📊 Günlere Göre Ders Yoğunluğu</h3>
+                <canvas id="dersGrafigi"></canvas>
+            </div>
+
+            <h3 style="text-align: center;">Haftalık Ders Programı Matrisi</h3>
             <div class="tablo-sarmalayici">
                 <table id="programTablosu">
                     <thead>
                         <tr>
-                            <th>Saat / Gün</th>
-                            <th>Pzt</th>
-                            <th>Sal</th>
-                            <th>Çrş</th>
-                            <th>Prş</th>
-                            <th>Cum</th>
-                            <th>Cts</th>
-                            <th>Pzr</th>
+                            <th>Saat / Gün</th><th>Pzt</th><th>Sal</th><th>Çrş</th><th>Prş</th><th>Cum</th><th>Cts</th><th>Pzr</th>
                         </tr>
                     </thead>
-                    <tbody id="tabloGovdesi">
-                        </tbody>
+                    <tbody id="tabloGovdesi"></tbody>
                 </table>
             </div>
+
+            <!-- YENİ: İndirme Butonu -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="btnIndir" class="btn-birincil" style="background: linear-gradient(90deg, #28a745, #218838); color: white;">📥 Programı Resim Olarak İndir</button>
+            </div>
+
         </div>
     </div>
 
+    <!-- Scriptleri çağırıyoruz -->
+    <script src="ui.js"></script>
     <script src="web_lesson_otomation.js"></script>
-    
 
 </body>
 </html>
