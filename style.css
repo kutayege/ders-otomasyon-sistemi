@@ -195,6 +195,7 @@ textarea {
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+
 textarea:focus {
     border-color: #4facfe;
     box-shadow: 0 0 8px rgba(79, 172, 254, 0.5);
