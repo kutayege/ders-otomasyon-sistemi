@@ -1,0 +1,67 @@
+.main-container {
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+.page-title {
+    color: #2c3e50;
+}
+
+.alert-box {
+    color: red;
+    font-weight: bold;
+}
+
+.input-box {
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.dropdown-menu {
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.action-btn {
+    margin: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    background-color: #060000;
+    border: 1px solid #000000;
+}
+
+.student-profile {
+    border: 1px solid gray;
+    padding: 15px;
+    margin: 15px 0;
+    background-color: #f9f9f9;
+}
+
+.course-info {
+    padding: 10px;
+    border-bottom: 1px dashed #ccc;
+    margin-bottom: 10px;
+}
+
+.stat-card {
+    color: #007bff;
+    margin-top: 20px;
+}
+
+.footer-text {
+    margin-top: 30px;
+    color: gray;
+    font-size: 13px;
+    border-top: 1px solid #915757;
+    padding-top: 10px;
+}
